@@ -1,0 +1,22 @@
+{
+  "name": "finance_data_processing-backend",
+  "version": "1.0.0",
+  "description": "finance data processing and access control backend system",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "node.js",
+    "express.js",
+    "mongoDB",
+    "JWT",
+    "API Development"
+  ],
+  "author": "Vishal Modanwal",
+  "license": "ISC",
+  "devDependencies": {
+    "prettier": "3.8.1"
+  }
+}
