@@ -8,7 +8,7 @@ const userSchema = new Schema({
         required : [true , 'User name is required'],
         lowercase : true,
         trim : true,
-        minLength : 2,
+        minLength : 3,
         maxLength : 70,
         index : true
     },
@@ -28,7 +28,6 @@ const userSchema = new Schema({
         type: String,
         required : [true , "Role is required"],
         enum: avaliableUserRole,
-        required: true,
         },
     isActive : {
         type : Boolean,
@@ -68,7 +67,7 @@ userSchema.methods.generateAccessToken = function(){
 
 userSchema.methods.generateRefreshToken = function(){
     return jwt.sign({
-        _id : this.id,
+        _id : this._id,
     },
     process.env.REFRESH_TOKEN_SECRET,
     {
