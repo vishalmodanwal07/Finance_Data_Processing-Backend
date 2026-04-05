@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 const app = express();
 
@@ -9,6 +10,7 @@ app.use(express.urlencoded({
     extended : true,
     limit : "16kb"
 }));
+app.use(cookieParser());
 
 //cors configuration
 app.use(cors({
@@ -21,15 +23,25 @@ app.use(cors({
 //import the routes
 
 import healthCheckRouter from "./routes/healthCheck.routes.js";
-import authRouter from "./routes/auth.routes.js"
+import authRouter from "./routes/auth.routes.js";
 
-
+app.use(function (req, res, next) {
+  console.log(req.method + " " + req.url);
+  next();
+});
 app.use("/api/v1/healthcheck" , healthCheckRouter);
 app.use("/api/v1/auth" , authRouter);
 
 
-app.get("/" , (req, res)=>{
-      res.send("app is running");
-})
+//global error handler
+app.use((err, req, res, next) => {
+ return res
+ .status(err.statusCode || 500)
+ .json({
+    success: false,
+    message: err.message || "Internal Server Error",
+    errors: err.errors || []
+  });
+});
 
 export default app;
