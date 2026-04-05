@@ -18,7 +18,6 @@ const userSchema = new Schema({
         unique : true,
         lowercase : true,
         trim : true,
-        match : [/\S+@\S+\.\S+/, 'please fill a valid email address'],
     },
     password : {
         type : String,
@@ -44,10 +43,9 @@ const userSchema = new Schema({
 });
 
 //bcrypt the password before saving in database 
-userSchema.pre("save" , async function(next){
- if(!this.isModified("password")) return next();
- this.password = await bcrypt.hash(this.password , 10);
- next();
+userSchema.pre("save", async function () {
+    if (!this.isModified("password")) return;
+    this.password = await bcrypt.hash(this.password, 10);
 });
 
 userSchema.methods.isPasswordCorrect = async function(password){
@@ -78,4 +76,4 @@ userSchema.methods.generateRefreshToken = function(){
     })
 }
 
-export const user = mongoose.model("User" , userSchema);
+export const User = mongoose.model("User" , userSchema);
