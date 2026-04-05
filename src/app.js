@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import { globalLimiter } from "./middlewares/rateLimiter.middleware.js";
+
 
 const app = express();
 
@@ -20,15 +22,23 @@ app.use(cors({
  allowedHeaders : ["Content-Type" , "Authorization"]
 }));
 
-//import the routes
-
-import healthCheckRouter from "./routes/healthCheck.routes.js";
-import authRouter from "./routes/auth.routes.js";
 
 app.use(function (req, res, next) {
   console.log(req.method + " " + req.url);
   next();
 });
+
+app.use(globalLimiter);
+
+//import the routes
+
+import healthCheckRouter from "./routes/healthCheck.routes.js";
+import authRouter from "./routes/auth.routes.js";
+
+
+
+
+
 app.use("/api/v1/healthcheck" , healthCheckRouter);
 app.use("/api/v1/auth" , authRouter);
 
