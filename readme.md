@@ -21,7 +21,7 @@ A production-ready backend API for managing users, financial records, and analyt
 * Password hashing using bcrypt
 * Role-Based Access Control (RBAC)
 * Rate limiting for API protection
-* Input validation and data sanitization
+* Input validation 
 * Protection against invalid or unauthorized operations
 * Soft delete implementation using `deletedAt`
 * Custom API response and error handling
@@ -70,11 +70,13 @@ npm install
 Create a `.env` file in the root directory:
 
 ```env id="env2"
-PORT=5000
+PORT=3000
 MONGO_URI=your_mongodb_connection_string
 ACCESS_TOKEN_SECRET=your_access_token_secret
+ACCESS_TOKEN_EXIPRY = your_expiry_time
 REFRESH_TOKEN_SECRET=your_refresh_token_secret
-CORS_ORIGIN=http://localhost:4200
+REFRESH_TOKEN_EXPIRY = your_expiry_time
+CORS_ORIGIN= frontend_link
 ```
 
 ### 4. Run the server
