@@ -84,7 +84,8 @@ http://localhost:5000/api/v1
 
 | Method | Endpoint     | Description     | Access  |
 | ------ | ------------ | --------------- | ------- |
-| GET    | /records     | Get all records | Private |
+| GET    | /records     | Get all records | Private
+GET      | /records/:id   Get a record      Private
 | POST   | /records     | Create record   | Private |
 | PUT    | /records/:id | Update record   | Private |
 | DELETE | /records/:id | Delete record   | Private |
@@ -139,6 +140,7 @@ http://localhost:5000/api/v1
 * Secure authentication and authorization
 * Scalable and maintainable code structure
 * Proper error handling and status codes
+* Test all the routes using postman.
 
 ---
 
@@ -148,6 +150,3 @@ Vishal Modanwal
 
 ---
 
-## License
-
-This project is licensed under the MIT License.
