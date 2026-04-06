@@ -1,152 +1,287 @@
+# API Documentation
 
-# Finance Data Processing and Access Control Backend API Documentation
-
-## Setup Instructions
-
-### 1. Clone the repository
-
-```bash
-git clone <your-repository-url>
-cd <project-folder>
-```
-
-### 2. Install dependencies
-
-```bash
-npm install
-```
-
-### 3. Configure environment variables
-
-Create a `.env` file in the root directory:
-
-```env
-PORT=3000
-MONGO_URI=your_mongodb_connection_string
-ACCESS_TOKEN_SECRET=your_access_token_secret
-ACCESS_TOKEN_EXIPRY = your_expiry_time
-REFRESH_TOKEN_SECRET=your_refresh_token_secret
-REFRESH_TOKEN_EXPIRY = your_expiry_time
-CORS_ORIGIN= frontend_link
+Base URL:
 
 ```
-
-### 4. Run the server
-
-Development:
-
-```bash
-npm run dev
-```
-
-Production:
-
-```bash
-npm start
+http://localhost:3000/api/v1
 ```
 
 ---
 
-## API Base URL
+## Authentication APIs
 
-```
-http://localhost:5000/api/v1
-```
+### 1. Login User
 
----
+**POST** `/auth/login`
 
-## API Endpoints
-
-### Authentication
-
-| Method | Endpoint       | Description                 | Access  |
-| ------ | -------------- | --------------------------- | ------- |
-| POST   | /auth/register | Register a new user         | Public  |
-| POST   | /auth/login    | Login user and get tokens   | Public  |
-| POST   | /auth/logout   | Logout user (clear cookies) | Private |
-
----
-
-### Users (Admin Only)
-
-| Method | Endpoint          | Description        |
-| ------ | ----------------- | ------------------ |
-| GET    | /users            | Get all users      |
-| GET    | /users/:id        | Get user by ID     |
-| POST   | /users            | Create user        |
-| PUT    | /users/:id        | Update user        |
-| DELETE | /users/:id        | Delete user        |
-| PATCH  | /users/:id/status | Toggle user status |
-
----
-
-### Records
-
-| Method | Endpoint     | Description     | Access  |
-| ------ | ------------ | --------------- | ------- |
-| GET    | /records     | Get all records | Private
-GET      | /records/:id   Get a record      Private
-| POST   | /records     | Create record   | Private |
-| PUT    | /records/:id | Update record   | Private |
-| DELETE | /records/:id | Delete record   | Private |
-
----
-
-### Dashboard
-
-| Method | Endpoint           | Description           | Access  |
-| ------ | ------------------ | --------------------- | ------- |
-| GET    | /dashboard/summary | Get analytics summary | Private |
-
----
-
-### Health Check
-
-| Method | Endpoint     | Description      |
-| ------ | ------------ | ---------------- |
-| GET    | /healthcheck | Check API status |
-
----
-
-## Request and Response Format
-
-### Success Response
+#### Request Body
 
 ```json
 {
-  "success": true,
+  "email": "admin@demo.com",
+  "password": "admin123"
+}
+```
+
+#### Response
+
+```json
+{
+  "statusCode": 200,
+  "data": {
+    "user": {},
+    "accessToken": "token",
+    "refreshToken": "token"
+  },
+  "message": "user logged in successfully"
+}
+```
+
+---
+
+### 2. Refresh Token
+
+**POST** `/auth/refresh-token`
+
+#### Description
+
+Generates a new access token using refresh token.
+
+---
+
+### 3. Logout User
+
+**POST** `/auth/logout`
+
+#### Description
+
+Clears access and refresh tokens.
+
+---
+
+## User APIs
+
+### 1. Create User (Admin Only)
+
+**POST** `/users/create`
+
+#### Headers
+
+```
+Authorization: Bearer <accessToken>
+```
+
+#### Request Body
+
+```json
+{
+  "name": "Test User",
+  "email": "test@demo.com",
+  "password": "test123",
+  "role": "viewer"
+}
+```
+
+#### Response
+
+```json
+{
+  "statusCode": 201,
   "data": {},
-  "message": "Request successful"
+  "message": "User created successfully"
 }
 ```
 
-### Error Response
+---
+
+### 2. Get All Users
+
+**GET** `/users`
+
+#### Headers
+
+```
+Authorization: Bearer <accessToken>
+```
+
+#### Response
 
 ```json
 {
-  "success": false,
-  "message": "Error message",
-  "errors": []
+  "statusCode": 200,
+  "data": [],
+  "message": "Users fetched successfully"
 }
 ```
 
 ---
 
-## Best Practices Followed
+## Record APIs
 
-* Separation of concerns (controllers, routes, services)
-* Reusable middleware design
-* Consistent API response format
-* Secure authentication and authorization
-* Scalable and maintainable code structure
-* Proper error handling and status codes
-* Test all the routes using postman.
+### 1. Create Record
+
+**POST** `/records`
+
+#### Headers
+
+```
+Authorization: Bearer <accessToken>
+```
+
+#### Request Body
+
+```json
+{
+  "amount": 1500,
+  "type": "income",
+  "category": "Salary",
+  "date": "2024-04-01",
+  "notes": "Monthly income"
+}
+```
+
+#### Response
+
+```json
+{
+  "statusCode": 201,
+  "data": {},
+  "message": "Record created successfully"
+}
+```
 
 ---
 
-## Author
+### 2. Get All Records
 
-Vishal Modanwal
+**GET** `/records`
+
+#### Headers
+
+```
+Authorization: Bearer <accessToken>
+```
+
+#### Response
+
+```json
+{
+  "statusCode": 200,
+  "data": [],
+  "message": "Records fetched successfully"
+}
+```
 
 ---
 
+### 3. Get Single Record
+
+**GET** `/records/:id`
+
+#### Headers
+
+```
+Authorization: Bearer <accessToken>
+```
+
+---
+
+### 4. Update Record
+
+**PUT** `/records/:id`
+
+#### Headers
+
+```
+Authorization: Bearer <accessToken>
+```
+
+#### Request Body
+
+```json
+{
+  "amount": 2000
+}
+```
+
+---
+
+### 5. Delete Record (Soft Delete)
+
+**DELETE** `/records/:id`
+
+#### Headers
+
+```
+Authorization: Bearer <accessToken>
+```
+
+#### Description
+
+Marks record as deleted using `deletedAt` field.
+
+---
+
+## Role-Based Access Control (RBAC)
+
+| Role    | Create User | Create Record | View Records | Delete |
+| ------- | ----------- | ------------- | ------------ | ------ |
+| Admin   | Yes         | Yes           | Yes          | Yes    |
+| Analyst | No          | Yes           | Yes          | No     |
+| Viewer  | No          | No            | Yes          | No     |
+
+---
+
+## Error Responses
+
+### 400 Bad Request
+
+```json
+{
+  "message": "Invalid input"
+}
+```
+
+### 401 Unauthorized
+
+```json
+{
+  "message": "Unauthorized"
+}
+```
+
+### 403 Forbidden
+
+```json
+{
+  "message": "Access denied"
+}
+```
+
+### 404 Not Found
+
+```json
+{
+  "message": "Resource not found"
+}
+```
+
+### 500 Internal Server Error
+
+```json
+{
+  "message": "Something went wrong"
+}
+```
+
+---
+
+## Notes
+
+* All protected routes require JWT in Authorization header
+* Passwords are securely hashed using bcrypt
+* Tokens are stored in HTTP-only cookies
+* Soft delete is implemented using `deletedAt`
+* Enums are used for roles and transaction types
+
+---
