@@ -22,7 +22,7 @@ const recordSchema = new Schema({
         required : [true , "Date is required"]
     },
     notes : {
-        type : string,
+        type : String,
         trim : true,
         default: ''
     },
@@ -39,8 +39,12 @@ const recordSchema = new Schema({
     timestamps : true
 });
 
+recordSchema.index({ type: 1, category: 1, date: -1 });
+recordSchema.index({ createdBy: 1, date: -1 });
+recordSchema.index({ deletedAt: 1 });
+
 recordSchema.pre(/^find/ , function(next){
     this.where({ deletedAt : null});
 })
 
-export const record = mongoose.model("Record" , recordSchema);
+export const Record = mongoose.model("Record" , recordSchema);

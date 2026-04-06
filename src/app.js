@@ -23,24 +23,28 @@ app.use(cors({
 }));
 
 
+
+
+app.use(globalLimiter);
+
 app.use(function (req, res, next) {
   console.log(req.method + " " + req.url);
   next();
 });
 
-app.use(globalLimiter);
-
 //import the routes
 
 import healthCheckRouter from "./routes/healthCheck.routes.js";
 import authRouter from "./routes/auth.routes.js";
-
-
-
-
+import userRouter from "./routes/user.routes.js";
+import recordRouter from "./routes/records.routes.js";
+import dashboardRouter from "./routes/dashboard.routes.js";
 
 app.use("/api/v1/healthcheck" , healthCheckRouter);
 app.use("/api/v1/auth" , authRouter);
+app.use("/api/v1/users" , userRouter);
+app.use("/api/v1/records" , recordRouter);
+app.use("/api/v1/dashboard" , dashboardRouter);
 
 
 //global error handler
