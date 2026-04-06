@@ -5,6 +5,6 @@ import { getSummary } from "../controllers/dashboard.controllers.js";
 
 const router = Router();
 
-router.route('/summary' , authentication , authorization("analyst" , "admin") , getSummary);
+router.route('/summary').get(authentication , authorization("analyst" , "admin") , getSummary);
 
 export default router;
